@@ -1,18 +1,17 @@
-FROM python:3.7-slim
+FROM alpine:3.8
 MAINTAINER Yusuf Iqbal <yusuf.iqbal@devfactory.com>
 
-RUN apt-get update
-RUN apt-get install --no-install-suggests -y groff-base
+RUN apk --update add --no-cache \
+        python \
+        py-pip \
+    && pip install --upgrade awscli \
+    && apk -v --purge del py-pip \
+    && rm /var/cache/apk/*
 
 # Set the application directory
 WORKDIR /app
 
-# Install AWS CLI
-RUN pip install awscli --upgrade --user
-RUN pip install --upgrade pip
-ENV PATH=~/.local/bin:$PATH
-
 # Copy code from the current folder to /app inside the container
 ADD . /app
 
-RUN cp -r /app/aws/ ~/.aws
+ENTRYPOINT [ "aws" ]
