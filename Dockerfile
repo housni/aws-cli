@@ -15,3 +15,4 @@ WORKDIR /app
 ADD . /app
 
 ENTRYPOINT [ "aws" ]
+CMD [ "iam", "get-user" ]
